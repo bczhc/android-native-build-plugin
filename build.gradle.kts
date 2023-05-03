@@ -28,6 +28,8 @@ publishing {
             groupId = "pers.zhc"
             artifactId = "android-native-build"
             version = "0.1"
+
+            from(components["java"])
         }
     }
 }
