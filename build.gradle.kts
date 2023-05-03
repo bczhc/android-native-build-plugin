@@ -1,6 +1,6 @@
 plugins {
     scala
-//    `maven-publish`
+    `maven-publish`
 //    java
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
@@ -22,15 +22,15 @@ repositories {
 //    }
 //}
 
-//publishing {
-//    publications {
-//        create<MavenPublication>("maven") {
-//            groupId = "pers.zhc"
-//            artifactId = "rustbuild"
-//            version = "0.1"
-//        }
-//    }
-//}
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "pers.zhc"
+            artifactId = "android-native-build"
+            version = "0.1"
+        }
+    }
+}
 
 dependencies {
     implementation(gradleApi())
