@@ -37,4 +37,5 @@ dependencies {
     implementation("org.scala-lang:scala-library:2.13.10")
     implementation("commons-io:commons-io:2.11.0")
     implementation("com.github.bczhc:java-lib:18a858c167")
+    implementation("org.jetbrains:annotations:23.0.0")
 }
