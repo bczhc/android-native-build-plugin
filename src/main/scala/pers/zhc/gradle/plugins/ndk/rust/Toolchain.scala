@@ -1,6 +1,6 @@
 package pers.zhc.gradle.plugins.ndk.rust
 
-import pers.zhc.gradle.plugins.ndk.AndroidAbi
+import pers.zhc.android.`def`.AndroidAbi
 
 import java.io.File
 
@@ -15,7 +15,7 @@ class Toolchain(
   private val binDir = ToolchainUtils.getToolchainBinDir(ndkPath)
   private val prefix: String = androidAbi.toNdkToolchainName
 
-  val arName: String = "llvm-ar"
+  private val arName: String = "llvm-ar"
   val linker: File =
     new File(binDir, s"$prefix$androidApi-clang")
   val ar: File = new File(binDir, arName)

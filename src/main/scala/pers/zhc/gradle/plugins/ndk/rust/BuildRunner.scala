@@ -1,9 +1,9 @@
 package pers.zhc.gradle.plugins.ndk.rust
 
+import pers.zhc.android.`def`.{AndroidTarget, BuildType}
 import pers.zhc.gradle.plugins.ndk.rust.BuildRunner.BuildOptions
 import pers.zhc.gradle.plugins.ndk.rust.RustBuildPlugin.Environments
 import pers.zhc.gradle.plugins.util.ProcessUtils
-import pers.zhc.gradle.plugins.ndk.{BuildType, Target}
 
 import java.io.File
 import scala.jdk.CollectionConverters.SeqHasAsJava
@@ -15,7 +15,7 @@ class BuildRunner(toolchain: Toolchain, options: BuildOptions) {
   def run(): Int = {
 
     val runtime = Runtime.getRuntime
-    val rustTarget = options.target.abi.toRustTarget
+    val rustTarget = options.target.abi.toRustTriple
     var command = List(
       "cargo",
       "build",
@@ -23,7 +23,7 @@ class BuildRunner(toolchain: Toolchain, options: BuildOptions) {
       rustTarget,
       s"-j${runtime.availableProcessors()}"
     )
-    if (options.buildType == BuildType.Release) {
+    if (options.buildType == BuildType.RELEASE) {
       command = command :+ "--release"
     }
 
@@ -48,7 +48,7 @@ class BuildRunner(toolchain: Toolchain, options: BuildOptions) {
 
 object BuildRunner {
   case class BuildOptions(
-      target: Target,
+      target: AndroidTarget,
       buildType: BuildType,
       env: Option[Environments],
       rustProjectDir: File

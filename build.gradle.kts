@@ -40,4 +40,5 @@ dependencies {
     implementation("commons-io:commons-io:2.11.0")
     implementation("com.github.bczhc:java-lib:18a858c167")
     implementation("org.jetbrains:annotations:23.0.0")
+    implementation("com.github.bczhc:android-target-defs:ac1ea2f9fc")
 }

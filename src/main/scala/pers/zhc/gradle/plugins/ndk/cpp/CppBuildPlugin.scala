@@ -2,9 +2,9 @@ package pers.zhc.gradle.plugins.ndk.cpp
 
 import org.gradle.api.provider.Property
 import org.gradle.api.{Plugin, Project, Task}
+import pers.zhc.android.`def`.{AndroidTarget, BuildType}
 import pers.zhc.gradle.plugins.ndk.NdkUtils.JMap
-import pers.zhc.gradle.plugins.ndk.{BuildType, NdkBaseExtension, NdkUtils}
-import pers.zhc.gradle.plugins.ndk.Target.Targets
+import pers.zhc.gradle.plugins.ndk.{NdkBaseExtension, NdkUtils}
 import pers.zhc.gradle.plugins.ndk.cpp.CppBuildPlugin.{CLEAN_TASK_NAME, COMPILE_TASK_NAME, Configurations, CppBuildPluginExtension}
 import pers.zhc.gradle.plugins.util.FileUtils
 
@@ -63,7 +63,7 @@ class CppBuildPlugin extends Plugin[Project] {
       override val cmakeBinDir: File = new File(
         unwrap(extensions.getCmakeBinDir, "getCmakeBinDir")
       )
-      override val targets: Targets =
+      override val targets: List[AndroidTarget] =
         NdkUtils.propertyToTargets(extensions.getTargets)
       override val buildType: BuildType =
         BuildType.from(unwrap(extensions.getBuildType, "buildType"))
@@ -94,7 +94,7 @@ object CppBuildPlugin {
     val srcDir: File
     val ndkDir: File
     val cmakeBinDir: File
-    val targets: Targets
+    val targets: List[AndroidTarget]
     val buildType: BuildType
     val cmakeDefs: Option[Map[String, Map[String, String]]]
   }

@@ -2,9 +2,9 @@ package pers.zhc.gradle.plugins.ndk.rust
 
 import org.gradle.api.provider.Property
 import org.gradle.api.{GradleException, Plugin, Project, Task}
+import pers.zhc.android.`def`.{AndroidAbi, AndroidTarget, BuildType}
 import pers.zhc.gradle.plugins.ndk.NdkUtils.JMap
-import pers.zhc.gradle.plugins.ndk.{AndroidAbi, BuildType, NdkBaseExtension, NdkUtils}
-import pers.zhc.gradle.plugins.ndk.Target.Targets
+import pers.zhc.gradle.plugins.ndk.{NdkBaseExtension, NdkUtils}
 import pers.zhc.gradle.plugins.ndk.rust.BuildRunner.BuildOptions
 import pers.zhc.gradle.plugins.ndk.rust.RustBuildPlugin.{Configurations, Environments, RustBuildPluginExtension, TASK_CLEAN_NAME, TASK_NAME, TargetEnv}
 import pers.zhc.gradle.plugins.util.{FileUtils, ProcessUtils}
@@ -13,8 +13,8 @@ import java.io.File
 import scala.jdk.CollectionConverters.{MapHasAsScala, SeqHasAsJava}
 
 class RustBuildPlugin extends Plugin[Project] {
-  var appProjectDir: File = _
-  var config: Configurations = _
+  private var appProjectDir: File = _
+  private var config: Configurations = _
   var project: Project = _
 
   override def apply(project: Project): Unit = {
@@ -55,7 +55,7 @@ class RustBuildPlugin extends Plugin[Project] {
     this.project = project
   }
 
-  def cleanRust(): Unit = {
+  private def cleanRust(): Unit = {
     val command = List("cargo", "clean")
     val pb = new ProcessBuilder(command.asJava)
       .directory(config.rustProjectDir)
@@ -67,7 +67,7 @@ class RustBuildPlugin extends Plugin[Project] {
     }
   }
 
-  def compileRust(): Unit = {
+  private def compileRust(): Unit = {
     val jniLibsDir = getJniLibsDir
 
     for (target <- config.targets) {
@@ -92,7 +92,7 @@ class RustBuildPlugin extends Plugin[Project] {
       val rustOutputDir =
         new File(
           config.rustProjectDir,
-          s"target/${target.abi.toRustTarget}/${config.buildType.toString}"
+          s"target/${target.abi.toRustTriple}/${config.buildType.toString}"
         )
       assert(rustOutputDir.exists())
 
@@ -127,14 +127,14 @@ class RustBuildPlugin extends Plugin[Project] {
     }
   }
 
-  def getJniLibsDir: File = config.outputDir match {
+  private def getJniLibsDir: File = config.outputDir match {
     case Some(value) =>
       new File(value)
     case None =>
       new File(appProjectDir, "jniLibs")
   }
 
-  def getConfigurations(extension: RustBuildPluginExtension): Configurations = {
+  private def getConfigurations(extension: RustBuildPluginExtension): Configurations = {
     def toOption[T](value: Property[T]) = Option(value.getOrNull())
 
     def unwrap[T](p: Property[T], name: String): T = {
@@ -155,7 +155,7 @@ class RustBuildPlugin extends Plugin[Project] {
         unwrap(extension.getNdkDir, "androidNdkDir")
       )
 
-      override val targets: Targets =
+      override val targets: List[AndroidTarget] =
         NdkUtils.propertyToTargets(extension.getTargets)
 
       override val buildType: BuildType =
@@ -174,7 +174,7 @@ class RustBuildPlugin extends Plugin[Project] {
     }
   }
 
-  def getBuildEnv(
+  private def getBuildEnv(
       extraEnv: Option[Environments],
       targetEnv: Option[TargetEnv],
       abi: AndroidAbi
@@ -202,7 +202,7 @@ object RustBuildPlugin {
     val outputDir: Option[String]
     val rustProjectDir: File
     val androidNdkDir: File
-    val targets: Targets
+    val targets: List[AndroidTarget]
     val buildType: BuildType
     val extraEnv: Option[Map[String, String]]
     val targetEnv: Option[Map[String, Environments]]

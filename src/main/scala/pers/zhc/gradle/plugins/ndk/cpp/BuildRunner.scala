@@ -4,7 +4,7 @@ import pers.zhc.gradle.plugins.ndk.cpp.CppBuildPlugin.Configurations
 
 import java.io.File
 import org.apache.commons.io.{FileUtils => ApacheFileUtils}
-import pers.zhc.gradle.plugins.ndk.Target
+import pers.zhc.android.`def`.AndroidTarget
 import pers.zhc.gradle.plugins.util.ProcessUtils
 
 class BuildRunner(configs: Configurations) {
@@ -27,7 +27,7 @@ class BuildRunner(configs: Configurations) {
 
       val cmakeDefs = configs.cmakeDefs
         .map({ x =>
-          x(target.abi.toString())
+          x(target.abi.toString)
         })
         .getOrElse(Map())
 
@@ -40,7 +40,7 @@ class BuildRunner(configs: Configurations) {
   private def copyFiles(
       buildDir: File,
       jniLibDir: File,
-      target: Target
+      target: AndroidTarget
   ): Unit = {
     buildDir.listFiles().filter(_.getName.endsWith(".so")).foreach { soFile =>
       val destFile =
@@ -52,7 +52,7 @@ class BuildRunner(configs: Configurations) {
 
   private def runBuild(
       cmakeToolchainFile: File,
-      target: Target,
+      target: AndroidTarget,
       buildDir: File,
       cmakeDefs: Map[String, String]
   ): Unit = {
